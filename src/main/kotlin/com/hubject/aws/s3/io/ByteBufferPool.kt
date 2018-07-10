@@ -72,6 +72,7 @@ class SimpleByteBufferPool
                 return createBuffer(minSize)
             } else {
                 spareBuffers.remove(buffer)
+                buffer.clear()
                 return buffer
             }
         }
@@ -80,6 +81,7 @@ class SimpleByteBufferPool
     override fun free(buffer: ByteBuffer): Unit {
         synchronized(spareBuffers) {
             if (spareBuffers.size < maxSpareBuffers) {
+                buffer.clear()
                 spareBuffers.add(buffer)
             }
         }
