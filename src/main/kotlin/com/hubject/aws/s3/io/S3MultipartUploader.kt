@@ -150,11 +150,13 @@ class S3MultipartUploader(
     private val completionFuture = CompletableFuture<Unit>()
 
     /**
-     * Is set to true when [complete] is called. Once set to true, must not
+     * Is set to true when [complete] or [close] is called. Once set to true, must not
      * change back to false. If true, [queuePart] will no longer accept new
      * parts
      */
-    private var isClosed = false
+    var isClosed = false
+        private set
+
     private val isClosedMutex = Any()
 
     /** The number of parts uploaded and currently queued for upload */
@@ -217,6 +219,7 @@ class S3MultipartUploader(
         }
     }
 
+    /** Implements [AutoCloseable.close] by forwarding to [complete] */
     override fun close() {
         complete().get()
     }
