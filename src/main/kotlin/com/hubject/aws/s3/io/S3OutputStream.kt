@@ -51,7 +51,13 @@ class S3OutputStream(
      * Whether to calculate MD5 checksums of the uploaded data. Turn this
      * off if you are concerned about the CPU load.
      */
-    val useChecksums: Boolean = true
+    val useChecksums: Boolean = true,
+
+    /**
+     * The buffers for local cache are obtained from here. Pass a custom implementation
+     * if you want to change the behaviour or share memory.
+     */
+    givenByteBufferPool: ByteBufferPool = ByteBufferPool.DEFAULT
 ) : OutputStream() {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -70,10 +76,15 @@ class S3OutputStream(
     val actualLocalCache: Long = Math.min(Int.MAX_VALUE.toLong() * 2, maxLocalCache)
 
     /**
+     * Nullable so that it can be released on [close]
+     */
+    private var byteBufferPool: ByteBufferPool? = givenByteBufferPool
+
+    /**
      * Receives the data from the write invocations. Nullable so that it can be
      * released when this stream is closed.
      */
-    private var writeBuffer: ByteBuffer? = ByteBuffer.allocate((actualLocalCache / 2L).toInt())
+    private var writeBuffer: ByteBuffer? = givenByteBufferPool.pop((actualLocalCache / 2L).toInt())
 
     /**
      * Serves as the backend for the current upload; by
@@ -83,7 +94,7 @@ class S3OutputStream(
      *
      * Nullable so that it can be released when this stream is closed.
      */
-    private var uploadBuffer: ByteBuffer? = ByteBuffer.allocate((maxLocalCache / 2L).toInt())
+    private var uploadBuffer: ByteBuffer? = givenByteBufferPool.pop((maxLocalCache / 2L).toInt())
 
     private val uploader: S3MultipartUploader by lazy { S3MultipartUploader(awsS3, targetBucket, targetS3Key, useChecksums) }
 
@@ -188,8 +199,13 @@ class S3OutputStream(
         }
 
         // release resources
+        byteBufferPool!!.free(writeBuffer!!)
         writeBuffer = null
+
+        byteBufferPool!!.free(uploadBuffer!!)
         uploadBuffer = null
+
+        byteBufferPool = null
     }
 
     /**
