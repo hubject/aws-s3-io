@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.*
 import io.kotlintest.shouldBe
 import io.kotlintest.shouldNotBe
+import io.kotlintest.shouldThrow
 import io.kotlintest.specs.FreeSpec
 import io.mockk.every
 import io.mockk.mockk
@@ -132,5 +133,27 @@ init {
         partUploadRequests.size shouldBe 1
         partUploadRequests[0].md5Digest shouldBe b64md5
         partUploadRequests[0].objectMetadata.contentMD5 shouldBe b64md5
+    }
+
+    "rejects parts after close" {
+        // SETUP
+        val uploader = S3MultipartUploader(s3mock, "bucketname", "key", true)
+
+        // ACT
+        uploader.queuePart(buffer).get() // .get() is important to make sure complete() only waits for the completion
+        val completionFuture = uploader.complete()
+
+        // VERIFY
+        completionFuture.isDone shouldBe false
+        shouldThrow<IllegalStateException> {
+            uploader.queuePart(buffer)
+        }
+        completionFuture.isDone shouldBe false
+
+        completionFuture.get()
+        completionFuture.isDone shouldBe true
+        shouldThrow<IllegalStateException> {
+            uploader.queuePart(buffer)
+        }
     }
 }}
