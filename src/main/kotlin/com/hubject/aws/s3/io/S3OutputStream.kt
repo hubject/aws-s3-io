@@ -1,7 +1,7 @@
 package com.hubject.aws.s3.io
 
 import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.model.*
+import com.amazonaws.services.s3.model.ObjectMetadata
 import com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream
 import org.slf4j.LoggerFactory
 import java.io.IOException
