@@ -196,18 +196,24 @@ class S3MultipartUploader(
             isClosed = true
         }
 
-        val future = CompletableFuture<Unit>()
-
-        if (!uploadFutures.isEmpty()) {
+        if (uploadFutures.isEmpty()) {
+            return CompletableFuture.completedFuture(Unit)
+        } else {
             // only if any uploads were actually started
+
+            val future = CompletableFuture<Unit>()
             thread(start = true, name = "multipart upload completion s3://$targetBucket/$targetS3Key") {
                 uploadFutures.forEach { it.get() /* join */ }
                 uploadingThread.interrupt()
-                future.complete(Unit)
-            }
-        }
 
-        return future
+                try {
+                    future.complete(completionFuture.get())
+                } catch (ex: Throwable) {
+                    future.completeExceptionally(ex)
+                }
+            }
+            return future
+        }
     }
 
     override fun close() {
