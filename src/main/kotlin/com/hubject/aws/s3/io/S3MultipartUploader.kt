@@ -93,6 +93,7 @@ class S3MultipartUploader(
                         .withPartNumber(partNumber)
                         .withInputStream(uploadInputStream)
                         .withObjectMetadata(metadata)
+                        .withMD5Digest(metadata.contentMD5)
 
                     log.trace("Uploading part $partNumber, size = $partSize (data source = ${System.identityHashCode(partData).toString(16)})")
                     val partUploadResult = awsS3.uploadPart(uploadRequest)
