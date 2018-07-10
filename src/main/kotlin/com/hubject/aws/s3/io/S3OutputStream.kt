@@ -44,7 +44,7 @@ class S3OutputStream(
 
     val targetS3Key: String,
 
-    /** The maximum amount of memory to use as buffer */
+    /** The maximum amount of memory to use as buffer, in bytes */
     val maxLocalCache: Long = Math.max(MIN_UPLOAD_PART_SIZE * 4L, 1024L * 1024L * 50L /* 50 MiB */),
 
     /**
@@ -57,7 +57,7 @@ class S3OutputStream(
      * The buffers for local cache are obtained from here. Pass a custom implementation
      * if you want to change the behaviour or share memory.
      */
-    givenByteBufferPool: ByteBufferPool = ByteBufferPool.DEFAULT
+    byteBufferPool: ByteBufferPool = ByteBufferPool.DEFAULT
 ) : OutputStream() {
 
     private val log = LoggerFactory.getLogger(javaClass)
@@ -78,13 +78,13 @@ class S3OutputStream(
     /**
      * Nullable so that it can be released on [close]
      */
-    private var byteBufferPool: ByteBufferPool? = givenByteBufferPool
+    private var byteBufferPool: ByteBufferPool? = byteBufferPool
 
     /**
      * Receives the data from the write invocations. Nullable so that it can be
      * released when this stream is closed.
      */
-    private var writeBuffer: ByteBuffer? = givenByteBufferPool.pop((actualLocalCache / 2L).toInt())
+    private var writeBuffer: ByteBuffer? = byteBufferPool.pop((actualLocalCache / 2L).toInt())
 
     /**
      * Serves as the backend for the current upload; by
@@ -94,7 +94,7 @@ class S3OutputStream(
      *
      * Nullable so that it can be released when this stream is closed.
      */
-    private var uploadBuffer: ByteBuffer? = givenByteBufferPool.pop((maxLocalCache / 2L).toInt())
+    private var uploadBuffer: ByteBuffer? = byteBufferPool.pop((maxLocalCache / 2L).toInt())
 
     private val uploader: S3MultipartUploader by lazy { S3MultipartUploader(awsS3, targetBucket, targetS3Key, useChecksums) }
 
