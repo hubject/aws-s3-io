@@ -33,7 +33,7 @@ class S3MultipartUploader(
      * off if you are concerned about the CPU load.
      */
     val useChecksums: Boolean = true
-) {
+) : AutoCloseable {
     private val log = LoggerFactory.getLogger(javaClass)
 
     /**
@@ -208,5 +208,9 @@ class S3MultipartUploader(
         }
 
         return future
+    }
+
+    override fun close() {
+        complete().get()
     }
 }
