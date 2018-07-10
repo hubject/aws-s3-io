@@ -20,7 +20,7 @@ import kotlin.concurrent.thread
  *
  * This class is thread safe.
  */
-class S3MultipartUploader(
+internal class S3MultipartUploader(
     /** The client to upload with */
     val awsS3: AmazonS3,
 
