@@ -12,7 +12,28 @@
         <kotlintest.version>3.1.7</kotlintest.version>
     </properties>
 
+    <name>aws-s3-io</name>
+    <description>Additional I/O classes for AWS S3</description>
+    <url>https://github.com/hubject/aws-s3-io</url>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://choosealicense.com/licenses/mit/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Tobias Marstaller</name>
+            <email>tobias.marstaller@hubject.com</email>
+            <organization>Hubject GmbH</organization>
+            <organizationUrl>https://www.hubject.com</organizationUrl>
+            <timezone>Europe/Berlin</timezone>
+        </developer>
+    </developers>
+
     <scm>
+        <connection>scm:git:git@github.com:hubject/aws-s3-io.git</connection>
         <developerConnection>scm:git:git@github.com:hubject/aws-s3-io.git</developerConnection>
     </scm>
 
