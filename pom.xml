@@ -13,7 +13,7 @@
     </properties>
 
     <scm>
-        <connection>scm:git:git@github.com:hubject/aws-s3-io.git</connection>
+        <developerConnection>scm:git:git@github.com:hubject/aws-s3-io.git</developerConnection>
     </scm>
 
     <distributionManagement>
@@ -146,6 +146,12 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <tagNameFormat>v{project.version}</tagNameFormat>
+                </configuration>
             </plugin>
         </plugins>
     </build>
