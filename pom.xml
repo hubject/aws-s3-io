@@ -4,13 +4,30 @@
 
     <groupId>com.hubject</groupId>
     <artifactId>aws-s3-io</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    
+    <version>0.9.0-SNAPSHOT</version>
+
     <properties>
         <kotlin.version>1.2.10</kotlin.version>
         <awssdk.version>1.11.355</awssdk.version>
         <kotlintest.version>3.1.7</kotlintest.version>
     </properties>
+
+    <scm>
+        <connection>scm:git:git@github.com:hubject/aws-s3-io.git</connection>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>sonatype-releases</id>
+            <name>Sonatype Releases</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+        <snapshotRepository>
+            <id>sonatype-snapshots</id>
+            <name>Sonatype Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <dependencies>
         <dependency>
