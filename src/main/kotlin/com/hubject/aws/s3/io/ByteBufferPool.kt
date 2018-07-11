@@ -5,7 +5,7 @@ import java.nio.ByteBuffer
 interface ByteBufferPool {
     /**
      * Returns a buffer that has at least the given amount of bytes
-     * of available space. If no such pool is currently free, one
+     * of available space. If no such buffer is currently free, one
      * will be allocated.
      */
     fun pop(minSize: Int): ByteBuffer
@@ -17,7 +17,12 @@ interface ByteBufferPool {
     fun free(buffer: ByteBuffer)
 
     companion object {
+        /**
+         * @return a suitable default implementation
+         * @see SimpleByteBufferPool
+         */
         val DEFAULT: ByteBufferPool by lazy { SimpleByteBufferPool() }
+            @JvmName("default") get
     }
 }
 

@@ -252,6 +252,7 @@ class S3OutputStream(
         mostRecentUploadHandle?.get()
     }
 
+    /** @suppres */
     companion object {
         /**
          * The minimum size for single parts of multipart uploads. This
@@ -259,7 +260,7 @@ class S3OutputStream(
          *
          * See [https://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html]
          */
-        val MIN_UPLOAD_PART_SIZE = 1024 * 1024 * 5 // 5MiB
+        const val MIN_UPLOAD_PART_SIZE = 1024 * 1024 * 5 // 5MiB
 
         /**
          * The maximum size of a single part in a multipart upload. This
@@ -267,7 +268,7 @@ class S3OutputStream(
          *
          * See [https://docs.aws.amazon.com/AmazonS3/latest/dev/qfacts.html]
          */
-        val MAX_UPLOAD_PART_SIZE: Long = 1024L * 1024L * 1024L * 5L // 5GiB
+        const val MAX_UPLOAD_PART_SIZE: Long = 1024L * 1024L * 1024L * 5L // 5GiB
 
         /**
          * The maximum size for a single file upload. This value is defined by
@@ -275,7 +276,7 @@ class S3OutputStream(
          *
          * See [https://docs.aws.amazon.com/AmazonS3/latest/dev/UploadingObjects.html]
          */
-        val MAX_SINGLE_FILE_UPLOAD_SIZE: Long = 1024L * 1024L * 1024L * 5L // 5GiB
+        const val MAX_SINGLE_FILE_UPLOAD_SIZE: Long = 1024L * 1024L * 1024L * 5L // 5GiB
     }
 }
 
