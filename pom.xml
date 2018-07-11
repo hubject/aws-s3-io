@@ -33,6 +33,7 @@
     </developers>
 
     <scm>
+        <url>https://github.com/hubject/aws-s3-io</url>
         <connection>scm:git:git@github.com:hubject/aws-s3-io.git</connection>
         <developerConnection>scm:git:git@github.com:hubject/aws-s3-io.git</developerConnection>
     </scm>
@@ -165,6 +166,35 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+                <version>0.9.17</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>javadocJar</goal>
+                        </goals>
+                        <configuration>
+                            <impliedPlatforms>
+                                <platform>JVM</platform>
+                            </impliedPlatforms>
+                            <includes>
+                                <file>${project.basedir}/README.md</file>
+                            </includes>
+                            <jdkVersion>8</jdkVersion>
+                            <sourceLinks>
+                                <link>
+                                    <dir>${project.basedir}/src/main/kotlin</dir>
+                                    <url>https://github.com/hubject/aws-s3-io</url>
+                                    <urlSuffix>#L</urlSuffix>
+                                </link>
+                            </sourceLinks>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
