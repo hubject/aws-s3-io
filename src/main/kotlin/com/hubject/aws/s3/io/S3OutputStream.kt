@@ -69,7 +69,13 @@ class S3OutputStream(
      * The actual amount of local cache; this caps the requested [maxLocalCache] to what
      * the [ByteBuffer]s can hold (2GiB each).
      */
-    val actualLocalCache: Long = Math.min(Int.MAX_VALUE.toLong() * 2, maxLocalCache)
+    val actualLocalCache: Long = Math.min(
+        Int.MAX_VALUE.toLong() * 2,
+        Math.min(
+            maxLocalCache,
+            MAX_UPLOAD_PART_SIZE * 2
+        )
+    )
 
     /**
      * Nullable so that it can be released on [close]
