@@ -3,10 +3,7 @@ package com.hubject.aws.s3.io
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.*
 import com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream
-import org.slf4j.LoggerFactory
-import sun.misc.BASE64Encoder
 import java.nio.ByteBuffer
-import java.security.MessageDigest
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
@@ -34,8 +31,6 @@ internal class S3MultipartUploader(
      */
     val useChecksums: Boolean = true
 ) : AutoCloseable {
-    private val log = LoggerFactory.getLogger(javaClass)
-
     /**
      * Whether a multipart upload has been initialized. Is set by the
      * getter of [multipartInitResponse]
@@ -51,7 +46,6 @@ internal class S3MultipartUploader(
         val r = awsS3.initiateMultipartUpload(InitiateMultipartUploadRequest(
             targetBucket, targetS3Key
         ))
-        log.info("Multipart upload started, id = ${r.uploadId}")
         multipartUploadHasBeenStarted = true
         r
     }
@@ -94,10 +88,8 @@ internal class S3MultipartUploader(
                         .withInputStream(uploadInputStream)
                         .withObjectMetadata(metadata)
                         .withMD5Digest(metadata.contentMD5)
-
-                    log.trace("Uploading part $partNumber, size = $partSize (data source = ${System.identityHashCode(partData).toString(16)})")
+                    
                     val partUploadResult = awsS3.uploadPart(uploadRequest)
-                    log.trace("Part $partNumber uploaded, size = $partSize, eTag = ${partUploadResult.eTag}")
                     uploadedPartsETags.add(partUploadResult.partETag)
                 }
 
@@ -131,8 +123,7 @@ internal class S3MultipartUploader(
                     multipartInitResponse.uploadId,
                     uploadedPartsETags.sortedBy { it.partNumber }
                 ))
-
-                log.trace("Multipart upload ${multipartInitResponse.uploadId} completed; location = ${completionResult.location}")
+                
                 completionFuture.complete(Unit)
             } catch (ex: Throwable) {
                 completionFuture.completeExceptionally(ex)

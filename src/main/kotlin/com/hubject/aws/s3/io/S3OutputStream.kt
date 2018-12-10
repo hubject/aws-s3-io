@@ -3,7 +3,6 @@ package com.hubject.aws.s3.io
 import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.fasterxml.jackson.databind.util.ByteBufferBackedInputStream
-import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.io.OutputStream
 import java.nio.ByteBuffer
@@ -59,9 +58,6 @@ class S3OutputStream(
      */
     byteBufferPool: ByteBufferPool = ByteBufferPool.DEFAULT
 ) : OutputStream() {
-
-    private val log = LoggerFactory.getLogger(javaClass)
-
     init {
         if (maxLocalCache < MIN_UPLOAD_PART_SIZE * 2) {
             throw IllegalArgumentException("The local cache must be at least ${MIN_UPLOAD_PART_SIZE * 2} " +
@@ -176,7 +172,6 @@ class S3OutputStream(
 
             uploader.complete()
         } else {
-            log.trace("Starting Single-Part upload")
             // this can be done in a single take
             writeBuffer!!.flip()
 
@@ -194,8 +189,6 @@ class S3OutputStream(
                     metadata
                 )
             }
-
-            log.trace("Single part upload done")
         }
 
         // release resources
