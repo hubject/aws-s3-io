@@ -4,7 +4,7 @@
 
     <groupId>com.hubject</groupId>
     <artifactId>aws-s3-io</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
 
     <properties>
         <kotlin.version>1.2.10</kotlin.version>
